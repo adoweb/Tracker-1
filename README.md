@@ -77,7 +77,7 @@ Installing Tracker is simple.
     Tracker::flushOlderThenOrBetween(Carbon::now(), Carbon::now()->subYear());
     ```
 
-6. It is important to record views automatically by using the supplied middleware to record correct app runtime and memory information. To do so register the middleware in `app\Http\Kernel`.
+6. It is important to record views by using the supplied middleware to record correct app runtime and memory information. To do so register the middleware in `app\Http\Kernel`.
     ```php
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
@@ -87,7 +87,7 @@ Installing Tracker is simple.
         'track' => \Kenarkose\Tracker\TrackerMiddleware::class
     ];
     ```
-    It is better to register this middleware as a routeMiddleware instead of a global middleware and use it in routes or route groups definitions as it may not be necessary to persist all site view.
+    It is better to register this middleware as a routeMiddleware instead of a global middleware and use it in routes or route groups definitions as it may not be necessary to persist all site view. This will persist and attach any Trackable that is added to stack to site views automatically when the request has been handled by Laravel.
     
 7. To attach views to any model or class, you should implement the `Kenarkose\Tracker\TrackableInterface` interface. Tracker provides `Kenarkose\Tracker\Trackable` trait to be used by Eloquent models.
     ```php
@@ -145,7 +145,7 @@ Installing Tracker is simple.
              */
             public function down()
             {
-                Schema::drop('site_views');
+                Schema::drop('node_site_view');
             }
         }
 
