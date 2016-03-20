@@ -1,6 +1,6 @@
 {
     "name": "kenarkose/tracker",
-    "description": "Simple site visit/statistics tracker for Laravel 5+",
+    "description": "Simple site visit/statistics tracker for Laravel 5",
     "license": "MIT",
     "keywords": [
         "kenarkose",
