@@ -273,9 +273,9 @@ class Tracker {
      * @param timestamp $until
      * @return bool
      */
-    public function flushOlderThen($until)
+    public function flushOlderThan($until)
     {
-        return $this->flushOlderThenOrBetween($until);
+        return $this->flushOlderThanOrBetween($until);
     }
 
     /**
@@ -285,10 +285,10 @@ class Tracker {
      * @param timestamp $from
      * @return bool
      */
-    public function flushOlderThenOrBetween($until = null, $from = null)
+    public function flushOlderThanOrBetween($until = null, $from = null)
     {
         $modelName = $this->getViewModelName();
 
-        return $modelName::olderThenOrBetween($until, $from)->delete();
+        return $modelName::olderThanOrBetween($until, $from)->delete();
     }
 }

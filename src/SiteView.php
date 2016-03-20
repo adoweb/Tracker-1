@@ -45,7 +45,7 @@ class SiteView extends Eloquent {
      * @param timestamp|null $from
      * @return Builder
      */
-    public function scopeOlderThenOrBetween(Builder $query, $until = null, $from = null)
+    public function scopeOlderThanOrBetween(Builder $query, $until = null, $from = null)
     {
         if (is_null($until))
         {
