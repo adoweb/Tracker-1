@@ -21,17 +21,18 @@ class CreateSiteViewsTable extends Migration {
             $table->unsignedInteger('user_id')->nullable();
 
             $table->string('http_referer', 2000)->nullable();
-            $table->string('url', 2000)->nullable();
+            $table->string('url', 2000);
 
-            $table->string('request_method', 10)->nullable();
-            $table->string('request_path')->nullable();
+            $table->string('request_method', 10);
+            $table->string('request_path');
 
             $table->string('http_user_agent')->nullable();
             $table->string('http_accept_language')->nullable();
+            $table->string('locale')->index();
 
-            $table->bigInteger('request_time')->nullable();
-            $table->float('app_time')->nullable();
-            $table->bigInteger('memory')->nullable();
+            $table->bigInteger('request_time');
+            $table->float('app_time');
+            $table->bigInteger('memory');
 
             $table->timestamp('created_at');
         });

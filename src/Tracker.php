@@ -4,6 +4,7 @@ namespace Kenarkose\Tracker;
 
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
 
@@ -32,6 +33,9 @@ class Tracker {
     /** Session store @var Store */
     protected $session;
 
+    /** Laravel application @var Application */
+    protected $app;
+
     /** Trackables @var array */
     protected $trackables = [];
 
@@ -41,12 +45,14 @@ class Tracker {
      * @param Repository $config
      * @param Request $request
      * @param Store $session
+     * @param Application $app
      */
-    public function __construct(Repository $config, Request $request, Store $session)
+    public function __construct(Repository $config, Request $request, Store $session, Application $app)
     {
         $this->config = $config;
         $this->request = $request;
         $this->session = $session;
+        $this->app = $app;
     }
 
     /**
@@ -114,6 +120,7 @@ class Tracker {
             'request_path'         => $request->getPathInfo(),
             'http_user_agent'      => $request->server('HTTP_USER_AGENT'),
             'http_accept_language' => $request->server('HTTP_ACCEPT_LANGUAGE'),
+            'locale'               => $this->app->getLocale(),
             'request_time'         => $request->server('REQUEST_TIME')
         ];
     }

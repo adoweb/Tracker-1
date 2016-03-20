@@ -22,7 +22,7 @@ class SiteView extends Eloquent {
     public $fillable = [
         'user_id', 'http_referer', 'url',
         'request_method', 'request_path',
-        'http_user_agent', 'http_accept_language',
+        'http_user_agent', 'http_accept_language', 'locale',
         'request_time', 'app_time', 'memory'
     ];
 
