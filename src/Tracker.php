@@ -270,25 +270,25 @@ class Tracker {
     /**
      * Flush older SiteViews
      *
-     * @param timestamp $time
+     * @param timestamp $until
      * @return bool
      */
-    public function flushOlderThen($time)
+    public function flushOlderThen($until)
     {
-        return $this->flushOlderThenOrBetween($time);
+        return $this->flushOlderThenOrBetween($until);
     }
 
     /**
      * Flush older than or between SiteViews
      *
-     * @param timestamp $latter
-     * @param timestamp $former
+     * @param timestamp $until
+     * @param timestamp $from
      * @return bool
      */
-    public function flushOlderThenOrBetween($latter = null, $former = null)
+    public function flushOlderThenOrBetween($until = null, $from = null)
     {
         $modelName = $this->getViewModelName();
 
-        return $modelName::olderThanOrBetween($latter, $former)->delete();
+        return $modelName::olderThenOrBetween($until, $from)->delete();
     }
 }

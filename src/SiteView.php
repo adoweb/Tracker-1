@@ -41,22 +41,22 @@ class SiteView extends Eloquent {
      * Scope for choosing by date
      *
      * @param Builder $query
-     * @param timestamp $latter
-     * @param timestamp|null $former
+     * @param timestamp $until
+     * @param timestamp|null $from
      * @return Builder
      */
-    public function scopeOlderThenOrBetween(Builder $query, $latter = null, $former = null)
+    public function scopeOlderThenOrBetween(Builder $query, $until = null, $from = null)
     {
-        if (is_null($latter))
+        if (is_null($until))
         {
-            $latter = Carbon::now();
+            $until = Carbon::now();
         }
 
-        $query->where('created_at', '<', $latter);
+        $query->where('created_at', '<', $until);
 
-        if ( ! is_null($former))
+        if ( ! is_null($from))
         {
-            $query->where('created_at', '>=', $former);
+            $query->where('created_at', '>=', $from);
         }
 
         return $query;
