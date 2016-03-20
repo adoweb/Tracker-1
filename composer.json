@@ -1,0 +1,46 @@
+{
+    "name": "kenarkose/tracker",
+    "description": "Simple site visit/statistics tracker for Laravel 5+",
+    "license": "MIT",
+    "keywords": [
+        "kenarkose",
+        "tracker",
+        "analytics",
+        "visitor",
+        "statistics",
+        "laravel",
+        "laravel5"
+    ],
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Hyleeh",
+            "email": "egemen@kenarkose.com",
+            "homepage": "http://egemenkizilcan.com",
+            "role": "Developer / Designer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "~4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kenarkose\\Tracker\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests"
+        ]
+    },
+    "suggest": {
+        "laravel/framework": "This package requires Laravel 5."
+    }
+}
