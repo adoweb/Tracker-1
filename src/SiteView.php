@@ -17,6 +17,13 @@ class SiteView extends Eloquent {
     public $timestamps = false;
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at'];
+
+    /**
      * Fillable attributes
      */
     public $fillable = [
