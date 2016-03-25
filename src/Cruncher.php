@@ -230,6 +230,7 @@ class Cruncher {
         $query = $this->determineLocaleAndQuery($locale, $query);
 
         $statistics = [];
+        $labels = [];
 
         if (is_null($until))
         {
@@ -240,15 +241,16 @@ class Cruncher {
 
         do
         {
-            $statistics[] = [
-                'date' => $until->copy(),
-                'count' => $this->{'getRelative' . $span . 'Count'}($until->copy(), $locale, clone $query)
-            ];
+            $labels[] = $until->copy();
+            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), $locale, clone $query);
 
             $until->{'sub' . $span}();
         } while ($until->gt($from));
 
-        return array_reverse($statistics);
+        return [
+            array_reverse($statistics),
+            array_reverse($labels)
+        ];
     }
 
     /**

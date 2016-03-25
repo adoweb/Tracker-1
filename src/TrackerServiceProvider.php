@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 class TrackerServiceProvider extends ServiceProvider {
 
-    const version = '1.1.0';
+    const version = '1.2.0';
 
     /**
      * Indicates if loading of the provider is deferred.
