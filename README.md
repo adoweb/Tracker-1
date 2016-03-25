@@ -15,6 +15,7 @@ Tracker provides a simple way to track your site visits and their statistics.
 - Associate site views to Eloquent models to track their views
 - Persists unique views based on URL, method, and IP address
 - Helper method, Facade, and trait for easing access to services
+- Handy 'Cruncher' for number crunching needs
 - Flushing and selecting site views with given time spans
 - A [phpunit](http://www.phpunit.de) test suite for easy development
 
@@ -150,6 +151,8 @@ Installing Tracker is simple.
         }
 
     ```
+    
+8. Check the `Kenarkose\Tracker\Cruncher` class and test for statistics number crunching. It is equipped with a number of methods for different types of statistics (mostly counts) in different time spans.
 
 Please check the tests and source code for further documentation, as the source code of Tracker is well tested and documented.
 
