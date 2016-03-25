@@ -116,7 +116,7 @@ class Cruncher {
             $end = Carbon::today();
         }
 
-        return $this->getCountInBetween($end->copy()->subMonth()->startOfDay(), $end->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($end->copy()->subMonth()->addDay()->startOfDay(), $end->endOfDay(), $locale, $query);
     }
 
     /**
@@ -134,7 +134,7 @@ class Cruncher {
             $end = Carbon::today();
         }
 
-        return $this->getCountInBetween($end->copy()->subWeek()->startOfDay(), $end->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($end->copy()->subWeek()->addDay()->startOfDay(), $end->endOfDay(), $locale, $query);
     }
 
     /**
@@ -242,7 +242,7 @@ class Cruncher {
         do
         {
             $labels[] = $until->copy();
-            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), $locale, clone $query);
+            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), null, clone $query);
 
             $until->{'sub' . $span}();
         } while ($until->gt($from));
