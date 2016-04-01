@@ -43,6 +43,8 @@ trait Trackable {
         {
             return $this->trackerPivotTable;
         }
+
+        return null;
     }
 
     /**
@@ -56,6 +58,8 @@ trait Trackable {
         {
             return $this->trackerForeignKey;
         }
+
+        return null;
     }
 
 }
