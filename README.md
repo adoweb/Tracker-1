@@ -70,6 +70,7 @@ Installing Tracker is simple.
     Tracker::saveCurrent();
     
     tracker()->isViewUnique();
+    tracker()->isViewValid();
     
     tracker()->addTrackable($post);
     
