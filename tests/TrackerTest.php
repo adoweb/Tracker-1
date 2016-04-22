@@ -85,6 +85,24 @@ class TrackerTest extends TestBase {
     }
 
     /** @test */
+    function it_checks_if_current_view_is_valid()
+    {
+        $tracker = $this->getTracker();
+
+        // The user agent for test is 'Symfony/3.X'
+        $this->assertTrue(
+            $tracker->isViewValid()
+        );
+
+        // Let's include it to the bot_filter and retry
+        $this->app->config->set('tracker.bot_filter', ['symfony']);
+
+        $this->assertFalse(
+            $tracker->isViewValid()
+        );
+    }
+
+    /** @test */
     function it_saves_the_current_view()
     {
         $tracker = $this->getTracker();

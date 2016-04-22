@@ -132,7 +132,7 @@ class Tracker {
      */
     public function saveCurrent()
     {
-        if ($this->saveEnabled() && $this->isViewUnique())
+        if ($this->saveEnabled() && $this->isViewValid() && $this->isViewUnique())
         {
             $success = $this->saveCurrentModel();
 
@@ -161,6 +161,58 @@ class Tracker {
     protected function saveEnabled()
     {
         return $this->config->get('tracker.enabled', true);
+    }
+
+    /**
+     * Checks if the view is valid
+     * (checks if the view is by bots or humans)
+     *
+     * * @return bool
+     */
+    public function isViewValid()
+    {
+        $userAgent = strtolower($this->request->server('HTTP_USER_AGENT'));
+
+        if (is_null($userAgent))
+        {
+            return false;
+        }
+
+        $filters = $this->getBotFilter();
+
+        foreach ($filters as $filter)
+        {
+            if (strpos($userAgent, $filter) !== false)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Getter for the bot filter
+     *
+     * @return array
+     */
+    public function getBotFilter()
+    {
+        return $this->config->get('tracker.bot_filter', [
+            'bot',
+            'spider',
+            'pingbot',
+            'googlebot',
+            'yandexbot',
+            'bingbot',
+            'slurp',
+            'wow64',
+            'msie 6.0',
+            'dotbot',
+            'windows nt',
+            'feedfetcher',
+            'metauri'
+        ]);
     }
 
     /**
