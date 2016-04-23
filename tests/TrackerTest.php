@@ -143,4 +143,26 @@ class TrackerTest extends TestBase {
         $tracker->saveCurrent();
     }
 
+    /** @test */
+    function it_pauses_and_resumes_recording()
+    {
+        $tracker = $this->getTracker();
+
+        $this->assertTrue(
+            $tracker->saveEnabled()
+        );
+
+        $tracker->pauseRecording();
+
+        $this->assertFalse(
+            $tracker->saveEnabled()
+        );
+
+        $tracker->resumeRecording();
+
+        $this->assertTrue(
+            $tracker->saveEnabled()
+        );
+    }
+
 }

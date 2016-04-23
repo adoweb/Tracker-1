@@ -11,6 +11,11 @@ use Illuminate\Session\Store;
 class Tracker {
 
     /**
+     * @var bool
+     */
+    protected $paused = false;
+
+    /**
      * The current view instance
      *
      * @var SiteView
@@ -158,9 +163,9 @@ class Tracker {
      *
      * @return mixed
      */
-    protected function saveEnabled()
+    public function saveEnabled()
     {
-        return $this->config->get('tracker.enabled', true);
+        return (!$this->paused && $this->config->get('tracker.enabled', true));
     }
 
     /**
@@ -342,5 +347,21 @@ class Tracker {
         $modelName = $this->getViewModelName();
 
         return $modelName::olderThanOrBetween($until, $from)->delete();
+    }
+
+    /**
+     * Pauses recording
+     */
+    public function pauseRecording()
+    {
+        $this->paused = true;
+    }
+
+    /**
+     * Resumes auto-recording
+     */
+    public function resumeRecording()
+    {
+        $this->paused = false;
     }
 }

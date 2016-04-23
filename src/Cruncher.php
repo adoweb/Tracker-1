@@ -4,18 +4,27 @@ namespace Kenarkose\Tracker;
 
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class Cruncher {
+
+    /** Config repository @var ConfigRepository */
+    protected $config;
+
+    /** Cache repository @var CacheRepository */
+    protected $cache;
 
     /**
      * Constructor
      *
-     * @param Repository $config
+     * @param ConfigRepository $config
+     * @param CacheRepository $cache
      */
-    public function __construct(Repository $config)
+    public function __construct(ConfigRepository $config, CacheRepository $cache)
     {
         $this->config = $config;
+        $this->cache = $cache;
     }
 
     /**
@@ -73,14 +82,68 @@ class Cruncher {
      */
     public function getCountInBetween(Carbon $from, Carbon $until = null, $locale = null, $query = null)
     {
-        $query = $this->determineLocaleAndQuery($locale, $query);
-
         if (is_null($until))
         {
             $until = Carbon::now();
         }
 
-        return $query->whereBetween('created_at', [$from, $until])->count();
+        if ($count = $this->getCachedCountBetween($from, $until, $locale))
+        {
+            return $count;
+        }
+
+        $query = $this->determineLocaleAndQuery($locale, $query);
+
+        $count = $query->whereBetween('created_at', [$from, $until])->count();
+
+        $this->cacheCountBetween($count, $from, $until, $locale);
+
+        return $count;
+    }
+
+    /**
+     * Gets the cached count if there is any
+     *
+     * @param Carbon $from
+     * @param Carbon $until
+     * @param string|null $locale
+     * @return int|null
+     */
+    protected function getCachedCountBetween(Carbon $from, Carbon $until, $locale = null)
+    {
+        $key = $this->makeBetweenCacheKey($from, $until, $locale);
+
+        return $this->cache->get($key);
+    }
+
+    /**
+     * Caches count between
+     *
+     * @param int $count
+     * @param Carbon $from
+     * @param Carbon $until
+     * @param string|null $locale
+     */
+    protected function cacheCountBetween($count, Carbon $from, Carbon $until, $locale = null)
+    {
+        $key = $this->makeBetweenCacheKey($from, $until, $locale);
+
+        $this->cache->put($key, $count);
+    }
+
+    /**
+     * Makes the cache key
+     *
+     * @param Carbon $from
+     * @param Carbon $until
+     * @param string|null $locale
+     * @return string
+     */
+    protected function makeBetweenCacheKey(Carbon $from, Carbon $until, $locale = null)
+    {
+        return 'tracker.between.'
+            . (is_null($locale) ? '' : $locale . '.')
+            . $from->timestamp . '-' . $until->timestamp;
     }
 
     /**
