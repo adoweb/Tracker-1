@@ -88,9 +88,14 @@ class Cruncher {
             $until = Carbon::now();
         }
 
-        if ($count = $this->getCachedCountBetween($from, $until, $locale, $cacheKey))
+        if ( ! is_null($cacheKey))
         {
-            return $count;
+            $count = $this->getCachedCountBetween($from, $until, $locale, $cacheKey);
+
+            if ( ! is_null($count))
+            {
+                return $count;
+            }
         }
 
         $query = $this->determineLocaleAndQuery($locale, $query);
@@ -107,11 +112,11 @@ class Cruncher {
      *
      * @param Carbon $from
      * @param Carbon $until
-     * @param string|null $locale
-     * @param string|null $cacheKey
+     * @param string $locale
+     * @param string $cacheKey
      * @return int|null
      */
-    protected function getCachedCountBetween(Carbon $from, Carbon $until, $locale = null, $cacheKey = null)
+    protected function getCachedCountBetween(Carbon $from, Carbon $until, $locale, $cacheKey)
     {
         $key = $this->makeBetweenCacheKey($from, $until, $locale, $cacheKey);
 
@@ -119,19 +124,23 @@ class Cruncher {
     }
 
     /**
-     * Caches count between
+     * Caches count between if cacheKey is present
      *
      * @param int $count
      * @param Carbon $from
      * @param Carbon $until
-     * @param string|null $locale
-     * @param string|null $cacheKey
+     * @param string $locale
+     * @param string $cacheKey
      */
-    protected function cacheCountBetween($count, Carbon $from, Carbon $until, $locale = null, $cacheKey = null)
+    protected function cacheCountBetween($count, Carbon $from, Carbon $until, $locale, $cacheKey)
     {
-        $key = $this->makeBetweenCacheKey($from, $until, $locale, $cacheKey);
+        // Cache only if cacheKey is present
+        if ($cacheKey)
+        {
+            $key = $this->makeBetweenCacheKey($from, $until, $locale, $cacheKey);
 
-        $this->cache->put($key, $count, 525600);
+            $this->cache->put($key, $count, 525600);
+        }
     }
 
     /**
@@ -139,16 +148,16 @@ class Cruncher {
      *
      * @param Carbon $from
      * @param Carbon $until
-     * @param string|null $locale
-     * @param string|null $cacheKey
+     * @param string $locale
+     * @param string $cacheKey
      * @return string
      */
-    protected function makeBetweenCacheKey(Carbon $from, Carbon $until, $locale = null, $cacheKey)
+    protected function makeBetweenCacheKey(Carbon $from, Carbon $until, $locale, $cacheKey)
     {
-        return 'tracker.between.'
-            . (is_null($cacheKey) ? '' : $cacheKey . '.')
-            . (is_null($locale) ? '' : $locale . '.')
-            . $from->timestamp . '-' . $until->timestamp;
+        $key = 'tracker.between.' . $cacheKey . '.';
+        $key .= (is_null($locale) ? '' : $locale . '.');
+
+        return $key . $from->timestamp . '-' . $until->timestamp;
     }
 
     /**
