@@ -78,16 +78,17 @@ class Cruncher {
      * @param Carbon|null $until
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return int
      */
-    public function getCountInBetween(Carbon $from, Carbon $until = null, $locale = null, $query = null)
+    public function getCountInBetween(Carbon $from, Carbon $until = null, $locale = null, $query = null, $cacheKey = null)
     {
         if (is_null($until))
         {
             $until = Carbon::now();
         }
 
-        if ($count = $this->getCachedCountBetween($from, $until, $locale))
+        if ($count = $this->getCachedCountBetween($from, $until, $locale, $cacheKey))
         {
             return $count;
         }
@@ -96,7 +97,7 @@ class Cruncher {
 
         $count = $query->whereBetween('created_at', [$from, $until])->count();
 
-        $this->cacheCountBetween($count, $from, $until, $locale);
+        $this->cacheCountBetween($count, $from, $until, $locale, $cacheKey);
 
         return $count;
     }
@@ -107,11 +108,12 @@ class Cruncher {
      * @param Carbon $from
      * @param Carbon $until
      * @param string|null $locale
+     * @param string|null $cacheKey
      * @return int|null
      */
-    protected function getCachedCountBetween(Carbon $from, Carbon $until, $locale = null)
+    protected function getCachedCountBetween(Carbon $from, Carbon $until, $locale = null, $cacheKey = null)
     {
-        $key = $this->makeBetweenCacheKey($from, $until, $locale);
+        $key = $this->makeBetweenCacheKey($from, $until, $locale, $cacheKey);
 
         return $this->cache->get($key);
     }
@@ -123,10 +125,11 @@ class Cruncher {
      * @param Carbon $from
      * @param Carbon $until
      * @param string|null $locale
+     * @param string|null $cacheKey
      */
-    protected function cacheCountBetween($count, Carbon $from, Carbon $until, $locale = null)
+    protected function cacheCountBetween($count, Carbon $from, Carbon $until, $locale = null, $cacheKey = null)
     {
-        $key = $this->makeBetweenCacheKey($from, $until, $locale);
+        $key = $this->makeBetweenCacheKey($from, $until, $locale, $cacheKey);
 
         $this->cache->put($key, $count, 525600);
     }
@@ -137,11 +140,13 @@ class Cruncher {
      * @param Carbon $from
      * @param Carbon $until
      * @param string|null $locale
+     * @param string|null $cacheKey
      * @return string
      */
-    protected function makeBetweenCacheKey(Carbon $from, Carbon $until, $locale = null)
+    protected function makeBetweenCacheKey(Carbon $from, Carbon $until, $locale = null, $cacheKey)
     {
         return 'tracker.between.'
+            . (is_null($cacheKey) ? '' : $cacheKey . '.')
             . (is_null($locale) ? '' : $locale . '.')
             . $from->timestamp . '-' . $until->timestamp;
     }
@@ -152,16 +157,17 @@ class Cruncher {
      * @param Carbon|null $end
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return int
      */
-    public function getRelativeYearCount($end = null, $locale = null, $query = null)
+    public function getRelativeYearCount($end = null, $locale = null, $query = null, $cacheKey = null)
     {
         if (is_null($end))
         {
             $end = Carbon::today();
         }
 
-        return $this->getCountInBetween($end->copy()->subYear()->startOfDay(), $end->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($end->copy()->subYear()->startOfDay(), $end->endOfDay(), $locale, $query, $cacheKey);
     }
 
     /**
@@ -170,16 +176,17 @@ class Cruncher {
      * @param Carbon|null $end
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return int
      */
-    public function getRelativeMonthCount($end = null, $locale = null, $query = null)
+    public function getRelativeMonthCount($end = null, $locale = null, $query = null, $cacheKey = null)
     {
         if (is_null($end))
         {
             $end = Carbon::today();
         }
 
-        return $this->getCountInBetween($end->copy()->subMonth()->addDay()->startOfDay(), $end->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($end->copy()->subMonth()->addDay()->startOfDay(), $end->endOfDay(), $locale, $query, $cacheKey);
     }
 
     /**
@@ -188,16 +195,17 @@ class Cruncher {
      * @param Carbon|null $end
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return int
      */
-    public function getRelativeWeekCount($end = null, $locale = null, $query = null)
+    public function getRelativeWeekCount($end = null, $locale = null, $query = null, $cacheKey = null)
     {
         if (is_null($end))
         {
             $end = Carbon::today();
         }
 
-        return $this->getCountInBetween($end->copy()->subWeek()->addDay()->startOfDay(), $end->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($end->copy()->subWeek()->addDay()->startOfDay(), $end->endOfDay(), $locale, $query, $cacheKey);
     }
 
     /**
@@ -206,16 +214,17 @@ class Cruncher {
      * @param Carbon|null $end
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return int
      */
-    public function getRelativeDayCount($end = null, $locale = null, $query = null)
+    public function getRelativeDayCount($end = null, $locale = null, $query = null, $cacheKey = null)
     {
         if (is_null($end))
         {
             $end = Carbon::today();
         }
 
-        return $this->getCountInBetween($end, $end->copy()->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($end, $end->copy()->endOfDay(), $locale, $query, $cacheKey);
     }
 
     /**
@@ -224,16 +233,17 @@ class Cruncher {
      * @param Carbon|null $day
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return int
      */
-    public function getCountForDay(Carbon $day = null, $locale = null, $query = null)
+    public function getCountForDay(Carbon $day = null, $locale = null, $query = null, $cacheKey = null)
     {
         if (is_null($day))
         {
             $day = Carbon::now();
         }
 
-        return $this->getCountInBetween($day->startOfDay(), $day->copy()->endOfDay(), $locale, $query);
+        return $this->getCountInBetween($day->startOfDay(), $day->copy()->endOfDay(), $locale, $query, $cacheKey);
     }
 
     /**
@@ -243,11 +253,12 @@ class Cruncher {
      * @param Carbon|null $until
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return array
      */
-    public function getCountPerMonth(Carbon $from, Carbon $until = null, $locale = null, $query = null)
+    public function getCountPerMonth(Carbon $from, Carbon $until = null, $locale = null, $query = null, $cacheKey = null)
     {
-        return $this->getCountPer('Month', $from, $until, $locale, $query);
+        return $this->getCountPer('Month', $from, $until, $locale, $query, $cacheKey);
     }
 
     /**
@@ -257,11 +268,12 @@ class Cruncher {
      * @param Carbon|null $until
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return array
      */
-    public function getCountPerWeek(Carbon $from, Carbon $until = null, $locale = null, $query = null)
+    public function getCountPerWeek(Carbon $from, Carbon $until = null, $locale = null, $query = null, $cacheKey = null)
     {
-        return $this->getCountPer('Week', $from, $until, $locale, $query);
+        return $this->getCountPer('Week', $from, $until, $locale, $query, $cacheKey);
     }
 
     /**
@@ -271,11 +283,12 @@ class Cruncher {
      * @param Carbon|null $until
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return array
      */
-    public function getCountPerDay(Carbon $from, Carbon $until = null, $locale = null, $query = null)
+    public function getCountPerDay(Carbon $from, Carbon $until = null, $locale = null, $query = null, $cacheKey = null)
     {
-        return $this->getCountPer('Day', $from, $until, $locale, $query);
+        return $this->getCountPer('Day', $from, $until, $locale, $query, $cacheKey);
     }
 
     /**
@@ -286,9 +299,10 @@ class Cruncher {
      * @param Carbon|null $until
      * @param string|null $locale
      * @param mixed $query
+     * @param string|null $cacheKey
      * @return array
      */
-    protected function getCountPer($span, Carbon $from, Carbon $until = null, $locale = null, $query = null)
+    protected function getCountPer($span, Carbon $from, Carbon $until = null, $locale = null, $query = null, $cacheKey = null)
     {
         $query = $this->determineLocaleAndQuery($locale, $query);
 
@@ -305,7 +319,7 @@ class Cruncher {
         do
         {
             $labels[] = $until->copy();
-            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), null, clone $query);
+            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), null, clone $query, $cacheKey);
 
             $until->{'sub' . $span}();
         } while ($until->gt($from));
