@@ -128,7 +128,7 @@ class Cruncher {
     {
         $key = $this->makeBetweenCacheKey($from, $until, $locale);
 
-        $this->cache->put($key, $count);
+        $this->cache->put($key, $count, 525600);
     }
 
     /**
