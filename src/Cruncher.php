@@ -135,7 +135,7 @@ class Cruncher {
     protected function cacheCountBetween($count, Carbon $from, Carbon $until, $locale, $cacheKey)
     {
         // Cache only if cacheKey is present
-        if ($cacheKey)
+        if ($cacheKey && ($until->timestamp < Carbon::now()->timestamp))
         {
             $key = $this->makeBetweenCacheKey($from, $until, $locale, $cacheKey);
 
