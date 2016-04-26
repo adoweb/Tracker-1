@@ -328,7 +328,7 @@ class Cruncher {
         do
         {
             $labels[] = $until->copy();
-            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), null, clone $query, $cacheKey);
+            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), $locale, clone $query, $cacheKey);
 
             $until->{'sub' . $span}();
         } while ($until->gt($from));
