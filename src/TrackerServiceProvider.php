@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 class TrackerServiceProvider extends ServiceProvider {
 
-    const version = '1.5.3';
+    const version = '1.5.4';
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -41,13 +41,16 @@ class TrackerServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/resources/config.php' => config_path('tracker.php')
-        ]);
+        if ( ! $this->app->environment('production'))
+        {
+            $this->publishes([
+                __DIR__ . '/resources/config.php' => config_path('tracker.php')
+            ]);
 
-        $this->publishes([
-            __DIR__ . '/migrations/' => database_path('/migrations')
-        ], 'migrations');
+            $this->publishes([
+                __DIR__ . '/migrations/' => database_path('/migrations')
+            ], 'migrations');
+        }
     }
 
     /**
