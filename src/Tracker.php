@@ -263,10 +263,11 @@ class Tracker {
      */
     protected function saveCurrentModel()
     {
-        return $this->getCurrent()
-            ->setAttribute('app_time', $this->getCurrentRuntime())
-            ->setAttribute('memory', memory_get_peak_usage(true))
-            ->save();
+        $current = $this->getCurrent();
+        $current->setAttribute('app_time', $this->getCurrentRuntime());
+        $current->setAttribute('memory', memory_get_peak_usage(true));
+
+        return $current->save();
     }
 
     /**
