@@ -323,15 +323,18 @@ class Cruncher {
             $until = Carbon::now();
         }
 
-        $until->startOfDay();
+        $until->{'endOf' . $span}();
 
-        do
+        while ($until->gt($from))
         {
+            $start = $until->copy()->{'startOf' . $span}();
+            $end = $until->copy();
+
             $labels[] = $until->copy();
-            $statistics[] = $this->{'getRelative' . $span . 'Count'}($until->copy(), $locale, clone $query, $cacheKey);
+            $statistics[] = $this->getCountInBetween($start, $end, $locale, clone $query, $cacheKey);
 
             $until->{'sub' . $span}();
-        } while ($until->gt($from));
+        }
 
         return [
             array_reverse($statistics),

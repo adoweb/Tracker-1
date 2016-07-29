@@ -27,7 +27,7 @@ Installing Tracker is simple.
     ```js
     {
         "require": {
-            "kenarkose/tracker": "~1.0"
+            "kenarkose/tracker": "~1.6"
         }
     }
     ```
