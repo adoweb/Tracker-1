@@ -270,7 +270,7 @@ class CruncherTest extends TestBase {
         list($statistics, $labels) = $cruncher->getCountPerMonth(Carbon::today()->subYear());
 
         $this->assertCount(
-            13,
+            12,
             $statistics
         );
     }
@@ -283,7 +283,7 @@ class CruncherTest extends TestBase {
         list($statistics, $labels) = $cruncher->getCountPerWeek(Carbon::today()->subWeek(4));
 
         $this->assertCount(
-            5,
+            4,
             $statistics
         );
     }
@@ -296,7 +296,7 @@ class CruncherTest extends TestBase {
         list($statistics, $labels) = $cruncher->getCountPerDay(Carbon::today()->subWeek());
 
         $this->assertCount(
-            8,
+            7,
             $statistics
         );
     }

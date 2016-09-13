@@ -323,12 +323,12 @@ class Cruncher {
             $until = Carbon::now();
         }
 
-        $until->{'endOf' . $span}();
+        $until->{'startOf' . $span}();
 
         while ($until->gt($from))
         {
-            $start = $until->copy()->{'startOf' . $span}();
-            $end = $until->copy();
+            $start = $until->copy();
+            $end = $until->copy()->{'endOf' . $span}();
 
             $labels[] = $until->copy();
             $statistics[] = $this->getCountInBetween($start, $end, $locale, clone $query, $cacheKey);
