@@ -54,11 +54,8 @@ return [
         'ltx71',
         'java',
         'slurp',
-        'wow64',
         'qwant',
-        'msie 6.0',
         'dotbot',
-        'windows nt',
         'feedfetcher',
         'metauri'
     ],
